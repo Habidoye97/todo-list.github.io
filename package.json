@@ -1,0 +1,23 @@
+{
+  "name": "todo-list.github.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Habidoye97/todo-list.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Habidoye97/todo-list.github.io/issues"
+  },
+  "homepage": "https://github.com/Habidoye97/todo-list.github.io#readme",
+  "devDependencies": {
+    "webpack": "^5.64.3",
+    "webpack-cli": "^4.9.1"
+  }
+}
