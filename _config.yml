@@ -1,1 +1,3 @@
 theme: jekyll-theme-cayman
+title: todo-list
+description: A Todo List Application built with ES6 & Webpack. Todos are categorized into projects. More projects can be created/deleted. Todos can be created, updated, and deleted.
