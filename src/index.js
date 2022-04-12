@@ -30,20 +30,20 @@ upcomingBtn.addEventListener('click', (e) => {
 })
 
 function displayDefault (projectName) {
-  const topic = document.querySelector(".list-topic");
-  topic.innerHTML = "";
-  const topicType = document.createElement('div');
-  topicType.setAttribute('class', 'topic-type');
-  topicType.textContent = projectName
-  const topicDueDate = document.createElement('div');
-  topicDueDate.setAttribute('class', 'topic-due-date');
-  topicDueDate.textContent = "Due Date";
-  topic.appendChild(topicType);
-  topic.appendChild(topicDueDate);
+  const todoDisplay = document.querySelector(".todo-list-display-container")
+  todoDisplay.textContent = "";
+  const listHead = document.createElement("h2");
+  listHead.setAttribute('class', 'list-header')
+  listHead.textContent = projectName
+  const listDetails = document.createElement('div');
+  listDetails.setAttribute('class', 'list-details');
+  listDetails.setAttribute('id', 'list-details');
   const addTaskBtn = document.createElement('button');
   addTaskBtn.setAttribute('id', 'add-task-button')
   addTaskBtn.textContent = 'Add TasK'
-  topic.appendChild(addTaskBtn)
+  todoDisplay.appendChild(listHead)
+  todoDisplay.appendChild(listDetails)
+  todoDisplay.appendChild(addTaskBtn)
 }
 
 function createTaskForm () {
