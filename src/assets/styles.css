@@ -82,3 +82,6 @@ i {
   height: calc(100vh - 50px);
 }
 
+.active {
+  background-color: var(--btn-hover);
+}

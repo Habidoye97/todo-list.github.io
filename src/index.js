@@ -2,16 +2,39 @@ import './assets/styles.css';
 
 const body = document.querySelector('body');
 
-const displaySection = document.querySelector(".display-section")
-const inboxBtn = document.querySelector("#button-inbox-project");
-inboxBtn.addEventListener('click', displayDefault)
+const displaySection = document.querySelector(".display-section");
 
-function displayDefault () {
+// PROJECT BUTTON
+const inboxBtn = document.querySelector("#button-inbox-project");
+inboxBtn.addEventListener('click', (e) => {
+  if (e.target.classList.contains('active')) return
+  setActiveButton(inboxBtn)
+  let projectName = "Inbox"
+  displayDefault(projectName)
+})
+
+const todayBtn = document.querySelector("#button-today-project");
+todayBtn.addEventListener('click', (e) => {
+  if (e.target.classList.contains('active')) return
+  setActiveButton(todayBtn)
+  let projectName = "Today"
+  displayDefault(projectName)
+})
+
+const upcomingBtn = document.querySelector("#button-upcoming-project");
+upcomingBtn.addEventListener('click', (e) => {
+  if (e.target.classList.contains('active')) return
+  setActiveButton(upcomingBtn)
+  let projectName = "Upcoming"
+  displayDefault(projectName)
+})
+
+function displayDefault (projectName) {
   const topic = document.querySelector(".list-topic");
   topic.innerHTML = "";
   const topicType = document.createElement('div');
   topicType.setAttribute('class', 'topic-type');
-  topicType.textContent = "Home"
+  topicType.textContent = projectName
   const topicDueDate = document.createElement('div');
   topicDueDate.setAttribute('class', 'topic-due-date');
   topicDueDate.textContent = "Due Date";
@@ -55,3 +78,23 @@ function createTaskForm () {
   addTaskForm.appendChild(addNewTaskBtn)
   displaySection.appendChild(addTaskForm)
 }
+
+function setActiveButton (option) {
+  const navOption = document.querySelectorAll('.button-default-project')
+
+  navOption.forEach((option) => {
+    if(option !== this) {
+      option.classList.remove('active')
+    }
+  })
+
+  option.classList.add('active')
+}
+
+function todoPage () {
+  displayDefault("Inbox")
+  setActiveButton(document.querySelector('.button-default-project'))
+}
+
+todoPage()
+
