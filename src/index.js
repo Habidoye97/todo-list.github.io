@@ -2,7 +2,7 @@ import './assets/styles.css';
 
 const body = document.querySelector('body');
 
-const displaySection = document.querySelector(".display-section");
+const displayContainer = document.querySelector(".todo-list-display-container");
 
 // PROJECT BUTTON
 const inboxBtn = document.querySelector("#button-inbox-project");
@@ -29,9 +29,10 @@ upcomingBtn.addEventListener('click', (e) => {
   displayDefault(projectName)
 })
 
+
 function displayDefault (projectName) {
-  const todoDisplay = document.querySelector(".todo-list-display-container")
-  todoDisplay.textContent = "";
+  
+  displayContainer.textContent = "";
   const listHead = document.createElement("h2");
   listHead.setAttribute('class', 'list-header')
   listHead.textContent = projectName
@@ -39,11 +40,31 @@ function displayDefault (projectName) {
   listDetails.setAttribute('class', 'list-details');
   listDetails.setAttribute('id', 'list-details');
   const addTaskBtn = document.createElement('button');
-  addTaskBtn.setAttribute('id', 'add-task-button')
-  addTaskBtn.textContent = 'Add TasK'
-  todoDisplay.appendChild(listHead)
-  todoDisplay.appendChild(listDetails)
-  todoDisplay.appendChild(addTaskBtn)
+  addTaskBtn.setAttribute('class', 'add-task-button');
+  const addTaskImg = document.createElement("img");
+  addTaskImg.setAttribute('id', 'add-task-image')
+  addTaskImg.src = './icons8-plus-64.png'
+  const addTaskBtnText = document.createElement("span")
+  addTaskBtnText.setAttribute('id', 'add-task-btn-text')
+  addTaskBtnText.textContent = "Add Task"
+  addTaskBtn.appendChild(addTaskImg)
+  addTaskBtn.appendChild(addTaskBtnText)
+  displayContainer.appendChild(listHead)
+  displayContainer.appendChild(listDetails)
+  displayContainer.appendChild(addTaskBtn)
+  switch(projectName) {
+    case "Inbox":
+      addTaskBtn.setAttribute('id', 'inbox-add-btn')
+      break;
+    case "Today":
+      addTaskBtn.setAttribute('id', 'today-add-btn')
+      break;
+    case "Upcoming":
+      addTaskBtn.setAttribute('id', 'home-add-btn')
+      break;
+    default:
+      return
+  }
 }
 
 function createTaskForm () {
@@ -53,11 +74,11 @@ function createTaskForm () {
   addTaskFormTop.setAttribute('id', 'addTaskFormTop');
   const taskTitle = document.createElement('textarea')
   taskTitle.setAttribute('id', 'taskTitleArea');
-  taskTitle.placeholder = "Title: Laundry"
+  taskTitle.placeholder = "e.g. Read everyday p3 @goals #Learning"
   taskTitle.required
   const taskDetails = document.createElement('textarea');
   taskDetails.setAttribute('id', 'taskDetailsArea');
-  taskDetails.placeholder = "Details: e.g. fold laundry at 4pm"
+  taskDetails.placeholder = "Description"
   const dueDate = document.createElement('input');
   dueDate.setAttribute('id', 'dueDate')
   dueDate.placeholder = "Due Date"
@@ -66,17 +87,19 @@ function createTaskForm () {
   const addTaskFormBottom = document.createElement('div');
   addTaskFormBottom.setAttribute('id', 'addTaskFormbottom');
   const addNewTaskBtn = document.createElement('button');
-  addNewTaskBtn.setAttribute('id', 'add-new-task-button')
+  addNewTaskBtn.setAttribute('id', 'add-new-task-button');
+  addNewTaskBtn.textContent = "Add Task"
   const cancelBtn = document.createElement('button');
-  cancelBtn.setAttribute('id', 'add-task-button');
+  cancelBtn.setAttribute('id', 'cancel-task-button');
+  cancelBtn.textContent = "Cancel";
   addTaskFormTop.appendChild(taskTitle)
   addTaskFormTop.appendChild(taskDetails)
   addTaskFormTop.appendChild(dueDate)
   addTaskFormBottom.appendChild(addNewTaskBtn)
   addTaskFormBottom.appendChild(cancelBtn)
   addTaskForm.appendChild(addTaskFormTop)
-  addTaskForm.appendChild(addNewTaskBtn)
-  displaySection.appendChild(addTaskForm)
+  addTaskForm.appendChild(addTaskFormBottom)
+  displayContainer.appendChild(addTaskForm)
 }
 
 function setActiveButton (option) {
@@ -96,5 +119,25 @@ function todoPage () {
   setActiveButton(document.querySelector('.button-default-project'))
 }
 
+
 todoPage()
 
+const addTaskBtnControl = function () {
+  const addTaskBtn = document.querySelector('.add-task-button');
+  displayContainer.removeChild(addTaskBtn);
+  createTaskForm()
+}
+
+const btngetId = function (e) {
+  
+} 
+
+const inboxAddBtn = document.querySelector('#inbox-add-btn');
+console.log(inboxAddBtn)
+inboxAddBtn.addEventListener('click', addTaskBtnControl)
+
+const todayAddBtn = document.querySelector('#today-add-btn');
+todayAddBtn.addEventListener('click', addTaskBtnControl)
+
+const upcomingAddBtn = document.querySelector('#home-add-btn');
+upcomingAddBtn.addEventListener('click', addTaskBtnControl)

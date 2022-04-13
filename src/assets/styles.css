@@ -13,6 +13,7 @@
   --white: #fff;
   --nav-bg: rgb(250,250,250);
   --btn-hover: rgb(236,236,236);
+  --form-outline-color: rgb(221,221,221);
 }
 
 
@@ -44,6 +45,8 @@ i {
 
 .main {
   display: flex;
+  flex-direction: row;
+  flex-grow: 1;
 }
 
 #header {
@@ -86,3 +89,101 @@ i {
   background-color: var(--btn-hover);
 }
 
+.display-section {
+  margin-bottom: 38px;
+  padding-bottom: 2px;
+  width: 100%;
+}
+
+.todo-list-display-container {
+  padding: 35px 55px 0 55px;
+}
+
+.list-header {
+  padding-bottom: 15px;
+}
+
+.add-task-button {
+  display: flex;
+  padding-left: 0px;
+  align-items: center;
+}
+
+.add-task-button:hover {
+  background: none;
+  color: var(--header-bg);
+}
+
+#add-task-image {
+  height: 13px;
+  margin-right: 5px;
+}
+
+#addTaskForm  {
+  font-size: 13px;
+  font-family: inherit;
+}
+
+#addTaskFormTop {
+  min-height: 115px;
+  width: auto;
+  margin: 0 0 10px 0;
+  border: var(--form-outline-color) solid 1px;
+  border-radius: 10px;
+  display: grid;
+  grid-template-rows: 30px 80px 40px;
+  grid-template-columns: 110px auto;
+}
+
+#taskTitleArea {
+  grid-row: 1/2;
+  grid-column: 1/3;
+  min-height: 65px;
+  width: 95%;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: inherit;
+}
+
+#taskDetailsArea {
+  grid-row: 2/3;
+  grid-column: 1/3;
+  min-height: 65px;
+  width: 95%;
+  padding: 10px;
+  font-family: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+}
+
+#dueDate {
+  grid-row: 3/4;
+  width: 100px;
+  height: 30px;margin: auto;
+  margin-left: 10px;
+  line-height: 100%;
+  text-align: center;
+  padding: 0px;
+  border-radius: 5px;
+  border: var(--form-outline-color) solid 1px;
+}
+
+#add-new-task-button {
+  background-color: var(--header-bg);
+  color: white;
+  width: fit-content;
+  margin-right: 5px;
+  font-weight: 900;
+}
+
+#cancel-task-button {
+  width: fit-content;
+  font-weight: 900;
+  color: black;
+  border: var(--form-outline-color) solid 1px;
+}
