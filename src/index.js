@@ -11,6 +11,10 @@ inboxBtn.addEventListener('click', (e) => {
   setActiveButton(inboxBtn)
   let projectName = "Inbox"
   displayDefault(projectName)
+  getAddTaskElement().addEventListener('click', () => {
+    createTaskForm()
+    displayContainer.removeChild(getAddTaskElement())
+  })
 })
 
 const todayBtn = document.querySelector("#button-today-project");
@@ -19,6 +23,10 @@ todayBtn.addEventListener('click', (e) => {
   setActiveButton(todayBtn)
   let projectName = "Today"
   displayDefault(projectName)
+  getAddTaskElement().addEventListener('click', () => {
+    createTaskForm()
+    displayContainer.removeChild(getAddTaskElement())
+  })
 })
 
 const upcomingBtn = document.querySelector("#button-upcoming-project");
@@ -27,6 +35,10 @@ upcomingBtn.addEventListener('click', (e) => {
   setActiveButton(upcomingBtn)
   let projectName = "Upcoming"
   displayDefault(projectName)
+  getAddTaskElement().addEventListener('click', () => {
+    createTaskForm()
+    displayContainer.removeChild(getAddTaskElement())
+  })
 })
 
 
@@ -65,6 +77,12 @@ function displayDefault (projectName) {
     default:
       return
   }
+}
+
+function getButtonId() {
+  const idToGet = document.querySelector(".add-task-button");
+  console.log(idToGet.id)
+  return idToGet.id
 }
 
 function createTaskForm () {
@@ -117,27 +135,19 @@ function setActiveButton (option) {
 function todoPage () {
   displayDefault("Inbox")
   setActiveButton(document.querySelector('.button-default-project'))
+  getAddTaskElement().addEventListener('click', () => {
+    createTaskForm()
+    displayContainer.removeChild(getAddTaskElement())
+  })
 }
 
 
 todoPage()
 
-const addTaskBtnControl = function () {
-  const addTaskBtn = document.querySelector('.add-task-button');
-  displayContainer.removeChild(addTaskBtn);
-  createTaskForm()
+function getAddTaskElement () {
+  const addTaskBtn = document.getElementById(getButtonId());
+  console.log(addTaskBtn)
+  return addTaskBtn
 }
 
-const btngetId = function (e) {
-  
-} 
 
-const inboxAddBtn = document.querySelector('#inbox-add-btn');
-console.log(inboxAddBtn)
-inboxAddBtn.addEventListener('click', addTaskBtnControl)
-
-const todayAddBtn = document.querySelector('#today-add-btn');
-todayAddBtn.addEventListener('click', addTaskBtnControl)
-
-const upcomingAddBtn = document.querySelector('#home-add-btn');
-upcomingAddBtn.addEventListener('click', addTaskBtnControl)
