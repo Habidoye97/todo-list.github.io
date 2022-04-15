@@ -2,7 +2,21 @@ import './assets/styles.css';
 
 const body = document.querySelector('body');
 
+let taskLibrary = [];
+
 const displayContainer = document.querySelector(".todo-list-display-container");
+
+function Task(title, description, date) {
+  this.title = title
+  this.author = description
+  this.date = date
+}
+
+function addTaskToLibrary(title, description, date) {
+  const task = new Task(title, description, date)
+  taskLibrary.push(task)
+  console.log(taskLibrary)
+}
 
 // PROJECT BUTTON
 const inboxBtn = document.querySelector("#button-inbox-project");
@@ -88,6 +102,7 @@ function getButtonId() {
 function createTaskForm () {
   const addTaskForm = document.createElement('form');
   addTaskForm.setAttribute('id', 'addTaskForm');
+  
   const addTaskFormTop = document.createElement('div');
   addTaskFormTop.setAttribute('id', 'addTaskFormTop');
   const taskTitle = document.createElement('textarea')
@@ -107,6 +122,8 @@ function createTaskForm () {
   const addNewTaskBtn = document.createElement('button');
   addNewTaskBtn.setAttribute('id', 'add-new-task-button');
   addNewTaskBtn.textContent = "Add Task"
+  addNewTaskBtn.type = 'button'
+  addNewTaskBtn.addEventListener('click', getFormInput);
   const cancelBtn = document.createElement('button');
   cancelBtn.setAttribute('id', 'cancel-task-button');
   cancelBtn.textContent = "Cancel";
@@ -118,6 +135,17 @@ function createTaskForm () {
   addTaskForm.appendChild(addTaskFormTop)
   addTaskForm.appendChild(addTaskFormBottom)
   displayContainer.appendChild(addTaskForm)
+}
+
+function getFormInput () {
+  const taskFormContent = document.querySelector('#addTaskForm');
+  const taskTitleContent = document.querySelector('#taskTitleArea');
+  const taskDetailsContent = document.querySelector('#taskDetailsArea');
+  const dueDateContent = document.querySelector('#dueDate');
+  if (taskTitleContent.value !== '' && taskDetailsContent.value !== '' ) {
+    addTaskToLibrary(taskTitleContent.value, taskDetailsContent.value, dueDateContent.value)
+  }
+  taskFormContent.reset()
 }
 
 function setActiveButton (option) {
@@ -138,7 +166,7 @@ function todoPage () {
   getAddTaskElement().addEventListener('click', () => {
     createTaskForm()
     displayContainer.removeChild(getAddTaskElement())
-  })
+  }) 
 }
 
 
