@@ -25,9 +25,9 @@ inboxBtn.addEventListener('click', (e) => {
   setActiveButton(inboxBtn)
   let projectName = "Inbox"
   displayDefault(projectName)
-  getAddTaskElement().addEventListener('click', () => {
+  getAddTaskButton().addEventListener('click', () => {
     createTaskForm()
-    displayContainer.removeChild(getAddTaskElement())
+    dgetAddTaskButton().style.display = 'none'
   })
 })
 
@@ -37,9 +37,9 @@ todayBtn.addEventListener('click', (e) => {
   setActiveButton(todayBtn)
   let projectName = "Today"
   displayDefault(projectName)
-  getAddTaskElement().addEventListener('click', () => {
+  getAddTaskButton().addEventListener('click', () => {
     createTaskForm()
-    displayContainer.removeChild(getAddTaskElement())
+    getAddTaskButton().style.display = 'none'
   })
 })
 
@@ -49,9 +49,9 @@ upcomingBtn.addEventListener('click', (e) => {
   setActiveButton(upcomingBtn)
   let projectName = "Upcoming"
   displayDefault(projectName)
-  getAddTaskElement().addEventListener('click', () => {
+  getAddTaskButton().addEventListener('click', () => {
     createTaskForm()
-    displayContainer.removeChild(getAddTaskElement())
+    getAddTaskButton().style.display = 'none'
   })
 })
 
@@ -123,10 +123,20 @@ function createTaskForm () {
   addNewTaskBtn.setAttribute('id', 'add-new-task-button');
   addNewTaskBtn.textContent = "Add Task"
   addNewTaskBtn.type = 'button'
-  addNewTaskBtn.addEventListener('click', getFormInput);
+  addNewTaskBtn.addEventListener('click', () => {
+    getFormInput()
+    displayContainer.removeChild(addTaskForm)
+    getAddTaskButton().style.display = "block"
+  });
   const cancelBtn = document.createElement('button');
   cancelBtn.setAttribute('id', 'cancel-task-button');
   cancelBtn.textContent = "Cancel";
+  cancelBtn.type = 'button'
+  cancelBtn.addEventListener('click', () => {
+    addTaskForm.reset()
+    displayContainer.removeChild(addTaskForm)
+    getAddTaskButton().style.display = "block"
+  })
   addTaskFormTop.appendChild(taskTitle)
   addTaskFormTop.appendChild(taskDetails)
   addTaskFormTop.appendChild(dueDate)
@@ -163,16 +173,16 @@ function setActiveButton (option) {
 function todoPage () {
   displayDefault("Inbox")
   setActiveButton(document.querySelector('.button-default-project'))
-  getAddTaskElement().addEventListener('click', () => {
+  getAddTaskButton().addEventListener('click', () => {
     createTaskForm()
-    displayContainer.removeChild(getAddTaskElement())
+    getAddTaskButton().style.display = 'none'
   }) 
 }
 
 
 todoPage()
 
-function getAddTaskElement () {
+function getAddTaskButton () {
   const addTaskBtn = document.getElementById(getButtonId());
   console.log(addTaskBtn)
   return addTaskBtn
