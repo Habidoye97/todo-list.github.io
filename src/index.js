@@ -1,6 +1,11 @@
 import './assets/styles.css';
+import {isToday, toDate, isThisWeek, isBefore, endOfToday, add, format,} from "date-fns"
 
 const body = document.querySelector('body');
+const date = new Date();
+const dateFormat = format(date, "yyyy-MM-dd")
+console.log(dateFormat)
+
 
 let taskLibrary = [];
 let tasksToday = [];
@@ -26,8 +31,11 @@ if (localStorage.getItem('tasks') === null) {
 
 function addTaskToLibrary(title, description, date) {
   const task = new Task(title, description, date)
-  taskLibrary.push(task)
-  console.log(taskLibrary)
+  if (isToday(new Date(date))) {
+    tasksToday.push(task)
+    
+  }
+  console.log(tasksToday)
 }
 
 // PROJECT BUTTON
@@ -109,7 +117,7 @@ function displayDefault (projectName) {
 
 function getButtonId() {
   const idToGet = document.querySelector(".add-task-button");
-  console.log(idToGet.id)
+  
   return idToGet.id
 }
 
@@ -127,7 +135,7 @@ function createTaskForm () {
   taskDetails.placeholder = "Description"
   const dueDate = document.createElement('input');
   dueDate.setAttribute('id', 'dueDate')
-  dueDate.placeholder = "Due Date"
+  dueDate.min = format(new Date(), 'yyyy-MM-dd');
   dueDate.autocomplete = 'off';
   dueDate.type = "date"
   const addTaskFormBottom = document.createElement('div');
@@ -167,6 +175,7 @@ function getFormInput () {
   const taskTitleContent = document.querySelector('#taskTitleArea');
   const taskDetailsContent = document.querySelector('#taskDetailsArea');
   const dueDateContent = document.querySelector('#dueDate');
+  console.log(toDate(format(new Date(dueDateContent.value), 'dd.MMM')))
   if (taskTitleContent.value !== '' && taskDetailsContent.value !== '' ) {
     addTaskToLibrary(taskTitleContent.value, taskDetailsContent.value, dueDateContent.value)
   }
@@ -201,7 +210,7 @@ todoPage()
 
 function getAddTaskButton () {
   const addTaskBtn = document.getElementById(getButtonId());
-  console.log(addTaskBtn)
+  
   return addTaskBtn
 }
 
@@ -211,7 +220,7 @@ function getProject () {
 
 function createTodo () {
   localStorage.setItem('tasks', JSON.stringify(taskLibrary));
-  console.log(taskLibrary.length) 
+  
   todoListUl.textContent = " ";
   for(let i=0; i<taskLibrary.length; i++) {
     const taskList = document.createElement('li');
@@ -230,7 +239,8 @@ function createTodo () {
     const taskDeleteContainer = document.createElement('div');
     const taskDeleteBtn = document.createElement('button');
     const taskDeleteImg = document.createElement('img');
-    taskContentDate.textContent = taskLibrary[i].date
+    const contentDate =  taskLibrary[i].date;
+    taskContentDate.textContent = contentDate ? format(new Date(contentDate), 'E dd'): contentDate
     taskList.setAttribute('class', 'task-list-item');
     taskListContainer.setAttribute('class', 'task-list-body');
     taskCompletedContainer.setAttribute('class', 'task-list-checkbox-container');
