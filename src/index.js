@@ -3,13 +3,25 @@ import './assets/styles.css';
 const body = document.querySelector('body');
 
 let taskLibrary = [];
+let tasksToday = [];
+let tasksUpcoming = [];
 
 const displayContainer = document.querySelector(".todo-list-display-container");
+const listHolder = document.createElement('div');
+const todoListUl = document.createElement('ul');
+const listHead = document.createElement("h2");
 
 function Task(title, description, date) {
   this.title = title
-  this.author = description
+  this.description = description
   this.date = date
+}
+
+if (localStorage.getItem('tasks') === null) {
+    taskLibrary = [];
+} else {
+  const taskFromStorage = JSON.parse(localStorage.getItem('tasks'));
+  taskLibrary = taskFromStorage;
 }
 
 function addTaskToLibrary(title, description, date) {
@@ -27,7 +39,7 @@ inboxBtn.addEventListener('click', (e) => {
   displayDefault(projectName)
   getAddTaskButton().addEventListener('click', () => {
     createTaskForm()
-    dgetAddTaskButton().style.display = 'none'
+    getAddTaskButton().style.display = 'none'
   })
 })
 
@@ -57,14 +69,12 @@ upcomingBtn.addEventListener('click', (e) => {
 
 
 function displayDefault (projectName) {
-  
   displayContainer.textContent = "";
-  const listHead = document.createElement("h2");
   listHead.setAttribute('class', 'list-header')
   listHead.textContent = projectName
-  const listDetails = document.createElement('div');
-  listDetails.setAttribute('class', 'list-details');
-  listDetails.setAttribute('id', 'list-details');
+  listHolder.setAttribute('class', 'todo-list-holder');
+  todoListUl.setAttribute('class', 'task-list-section')
+  createTodo()
   const addTaskBtn = document.createElement('button');
   addTaskBtn.setAttribute('class', 'add-task-button');
   const addTaskImg = document.createElement("img");
@@ -75,18 +85,22 @@ function displayDefault (projectName) {
   addTaskBtnText.textContent = "Add Task"
   addTaskBtn.appendChild(addTaskImg)
   addTaskBtn.appendChild(addTaskBtnText)
+  listHolder.appendChild(todoListUl)
   displayContainer.appendChild(listHead)
-  displayContainer.appendChild(listDetails)
+  displayContainer.appendChild(listHolder)
   displayContainer.appendChild(addTaskBtn)
   switch(projectName) {
     case "Inbox":
-      addTaskBtn.setAttribute('id', 'inbox-add-btn')
+      addTaskBtn.setAttribute('id', 'inbox-add-btn');
+      todoListUl.setAttribute('id', 'inbox-todo-list-details');
       break;
     case "Today":
-      addTaskBtn.setAttribute('id', 'today-add-btn')
+      addTaskBtn.setAttribute('id', 'today-add-btn');
+      todoListUl.setAttribute('id', 'today-todo-list-details');
       break;
     case "Upcoming":
-      addTaskBtn.setAttribute('id', 'home-add-btn')
+      addTaskBtn.setAttribute('id', 'upcoming-add-btn');
+      todoListUl.setAttribute('id', 'upcoming-todo-list-details');
       break;
     default:
       return
@@ -102,7 +116,6 @@ function getButtonId() {
 function createTaskForm () {
   const addTaskForm = document.createElement('form');
   addTaskForm.setAttribute('id', 'addTaskForm');
-  
   const addTaskFormTop = document.createElement('div');
   addTaskFormTop.setAttribute('id', 'addTaskFormTop');
   const taskTitle = document.createElement('textarea')
@@ -125,8 +138,10 @@ function createTaskForm () {
   addNewTaskBtn.type = 'button'
   addNewTaskBtn.addEventListener('click', () => {
     getFormInput()
-    displayContainer.removeChild(addTaskForm)
+    displayContainer.removeChild(addTaskForm);
+    
     getAddTaskButton().style.display = "block"
+    createTodo()
   });
   const cancelBtn = document.createElement('button');
   cancelBtn.setAttribute('id', 'cancel-task-button');
@@ -172,11 +187,13 @@ function setActiveButton (option) {
 
 function todoPage () {
   displayDefault("Inbox")
+  
   setActiveButton(document.querySelector('.button-default-project'))
   getAddTaskButton().addEventListener('click', () => {
     createTaskForm()
     getAddTaskButton().style.display = 'none'
-  }) 
+  })
+  
 }
 
 
@@ -188,4 +205,58 @@ function getAddTaskButton () {
   return addTaskBtn
 }
 
+function getProject () {
+  const projectButtonId = getButtonId()
+}
 
+function createTodo () {
+  localStorage.setItem('tasks', JSON.stringify(taskLibrary));
+  console.log(taskLibrary.length) 
+  todoListUl.textContent = " ";
+  for(let i=0; i<taskLibrary.length; i++) {
+    const taskList = document.createElement('li');
+    const taskListContainer = document.createElement('div');
+    const taskCompletedContainer = document.createElement('div');
+    const taskCompledtedCheck = document.createElement('input');
+    taskCompledtedCheck.type = 'checkbox';
+    const taskContentContainer = document.createElement('div');
+    const taskContentWrapper = document.createElement('div');
+    const taskContentHead = document.createElement('h4');
+    taskContentHead.textContent = taskLibrary[i].title
+    const taskContentDescription = document.createElement('p');
+    taskContentDescription.textContent = taskLibrary[i].description
+    const taskContentDateContainer = document.createElement('div');
+    const taskContentDate = document.createElement('span');
+    const taskDeleteContainer = document.createElement('div');
+    const taskDeleteBtn = document.createElement('button');
+    const taskDeleteImg = document.createElement('img');
+    taskContentDate.textContent = taskLibrary[i].date
+    taskList.setAttribute('class', 'task-list-item');
+    taskListContainer.setAttribute('class', 'task-list-body');
+    taskCompletedContainer.setAttribute('class', 'task-list-checkbox-container');
+    taskCompledtedCheck.setAttribute('class', 'task-list-complete-checkbox');
+    taskContentContainer.setAttribute('class', 'task-list-item-content');
+    taskContentWrapper.setAttribute('class', 'task-list-item-content-wrapper');
+    taskContentHead.setAttribute('class', 'task-content head')
+    taskContentDescription.setAttribute('class', 'task-content description')
+    taskContentDateContainer.setAttribute('class', 'task-content-date-container')
+    taskContentDate.setAttribute('class', 'task-content date');
+    taskDeleteContainer.setAttribute('class', 'task-list-item-delete-wrapper');
+    taskDeleteBtn.setAttribute('class', 'task-delete-button hidden');
+    taskDeleteImg.setAttribute('class', 'task-delete-img');
+    taskDeleteImg.src = './icons8-delete-16.png'
+    taskCompletedContainer.appendChild(taskCompledtedCheck);
+    taskDeleteBtn.appendChild(taskDeleteImg);
+    taskDeleteContainer.appendChild(taskDeleteBtn);
+    taskContentWrapper.appendChild(taskContentHead);
+    taskContentWrapper.appendChild(taskContentDescription);
+    taskContentDateContainer.appendChild(taskContentDate);
+    taskContentContainer.appendChild(taskContentWrapper);
+    taskContentContainer.appendChild(taskContentDateContainer);
+    taskListContainer.appendChild(taskCompletedContainer);
+    taskListContainer.appendChild(taskContentContainer);
+    taskListContainer.appendChild(taskDeleteContainer);
+    taskList.appendChild(taskListContainer);
+    todoListUl.appendChild(taskList);
+  }
+}

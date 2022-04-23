@@ -47,6 +47,7 @@ i {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
+  
 }
 
 #header {
@@ -97,6 +98,7 @@ i {
 
 .todo-list-display-container {
   padding: 35px 55px 0 55px;
+  
 }
 
 .list-header {
@@ -186,4 +188,70 @@ i {
   font-weight: 900;
   color: black;
   border: var(--form-outline-color) solid 1px;
+}
+
+
+.task-list-item {
+  list-style-type: none;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.task-list-body {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  padding: 0;
+  cursor: pointer;
+}
+
+.task-list-checkbox-container {
+  margin: 11px 6px 0 -3px;
+  z-index: 1;
+}
+
+.task-list-item-content {
+  flex: 1;
+  padding: 8px 0;
+  margin-right: 30px;
+}
+
+.task-list-item-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  margin-bottom: 3px;
+}
+
+.head {
+  flex-grow: 1;
+  font-size: 14px;
+  line-height: 21px;
+  word-wrap: break-word;
+  overflow: hidden;
+  color: grey;
+}
+
+.description {
+  flex-basis: 100%;
+  font-size: 12px;
+  word-wrap: break-word;
+  overflow: hidden;
+  color: grey;
+}
+
+.date {
+  font-size: 12px;
+  line-height: 12px;
+}
+
+.task-list-item-delete-wrapper {
+  z-index: 1;
+}
+
+.hidden {
+  display: none;
+}
+
+.task-list-body:hover .hidden {
+  display: block;
 }
