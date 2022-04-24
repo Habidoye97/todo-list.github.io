@@ -1,13 +1,9 @@
 import './assets/styles.css';
-import {isToday, toDate, isThisWeek, isBefore, endOfToday, add, format,} from "date-fns"
+import {isToday, toDate, isThisWeek, isBefore, endOfToday, add, format,} from "date-fns";
 
 const body = document.querySelector('body');
-const date = new Date();
-const dateFormat = format(date, "yyyy-MM-dd")
-console.log(dateFormat)
 
-
-let taskLibrary = [];
+let tasksInbox = [];
 let tasksToday = [];
 let tasksUpcoming = [];
 
@@ -17,23 +13,44 @@ const todoListUl = document.createElement('ul');
 const listHead = document.createElement("h2");
 
 function Task(title, description, date) {
+  this.id = JSON.parse(localStorage.getItem('tasksInbox')).length + 1;
   this.title = title
   this.description = description
   this.date = date
 }
 
-if (localStorage.getItem('tasks') === null) {
-    taskLibrary = [];
+if (localStorage.getItem('tasksInbox') === null) {
+    tasksInbox = []
 } else {
-  const taskFromStorage = JSON.parse(localStorage.getItem('tasks'));
-  taskLibrary = taskFromStorage;
+  const tasksInboxFromStorage = JSON.parse(localStorage.getItem('tasksInbox'));
+  tasksInbox = tasksInboxFromStorage;
+}
+
+if (localStorage.getItem('tasksToday') === null) {
+  tasksToday = []
+} else {
+    const tasksTodayFromStorage = JSON.parse(localStorage.getItem('tasksToday'));
+    tasksToday = tasksTodayFromStorage;
+}
+
+if (localStorage.getItem('tasksUpcoming') === null) {
+  tasksUpcoming = []
+} else {
+  const tasksUpcomingFromStorage = JSON.parse(localStorage.getItem('tasksUpcoming'));
+  tasksUpcoming = tasksUpcomingFromStorage;
 }
 
 function addTaskToLibrary(title, description, date) {
   const task = new Task(title, description, date)
   if (isToday(new Date(date))) {
-    tasksToday.push(task)
-    
+    tasksToday.push(task) 
+    tasksInbox.push(task);
+    return
+  }
+  if (!isToday(new Date(date))) {
+    tasksUpcoming.push(task);
+    tasksInbox.push(task);
+    return
   }
   console.log(tasksToday)
 }
@@ -43,6 +60,7 @@ const inboxBtn = document.querySelector("#button-inbox-project");
 inboxBtn.addEventListener('click', (e) => {
   if (e.target.classList.contains('active')) return
   setActiveButton(inboxBtn)
+  createTodo(getProjectArray())
   let projectName = "Inbox"
   displayDefault(projectName)
   getAddTaskButton().addEventListener('click', () => {
@@ -55,11 +73,13 @@ const todayBtn = document.querySelector("#button-today-project");
 todayBtn.addEventListener('click', (e) => {
   if (e.target.classList.contains('active')) return
   setActiveButton(todayBtn)
+  createTodo(getProjectArray())
   let projectName = "Today"
   displayDefault(projectName)
   getAddTaskButton().addEventListener('click', () => {
     createTaskForm()
     getAddTaskButton().style.display = 'none'
+    
   })
 })
 
@@ -67,6 +87,7 @@ const upcomingBtn = document.querySelector("#button-upcoming-project");
 upcomingBtn.addEventListener('click', (e) => {
   if (e.target.classList.contains('active')) return
   setActiveButton(upcomingBtn)
+  createTodo(getProjectArray())
   let projectName = "Upcoming"
   displayDefault(projectName)
   getAddTaskButton().addEventListener('click', () => {
@@ -82,7 +103,7 @@ function displayDefault (projectName) {
   listHead.textContent = projectName
   listHolder.setAttribute('class', 'todo-list-holder');
   todoListUl.setAttribute('class', 'task-list-section')
-  createTodo()
+  
   const addTaskBtn = document.createElement('button');
   addTaskBtn.setAttribute('class', 'add-task-button');
   const addTaskImg = document.createElement("img");
@@ -117,7 +138,6 @@ function displayDefault (projectName) {
 
 function getButtonId() {
   const idToGet = document.querySelector(".add-task-button");
-  
   return idToGet.id
 }
 
@@ -147,9 +167,8 @@ function createTaskForm () {
   addNewTaskBtn.addEventListener('click', () => {
     getFormInput()
     displayContainer.removeChild(addTaskForm);
-    
     getAddTaskButton().style.display = "block"
-    createTodo()
+    createTodo(getProjectArray())
   });
   const cancelBtn = document.createElement('button');
   cancelBtn.setAttribute('id', 'cancel-task-button');
@@ -175,7 +194,6 @@ function getFormInput () {
   const taskTitleContent = document.querySelector('#taskTitleArea');
   const taskDetailsContent = document.querySelector('#taskDetailsArea');
   const dueDateContent = document.querySelector('#dueDate');
-  console.log(toDate(format(new Date(dueDateContent.value), 'dd.MMM')))
   if (taskTitleContent.value !== '' && taskDetailsContent.value !== '' ) {
     addTaskToLibrary(taskTitleContent.value, taskDetailsContent.value, dueDateContent.value)
   }
@@ -183,8 +201,7 @@ function getFormInput () {
 }
 
 function setActiveButton (option) {
-  const navOption = document.querySelectorAll('.button-default-project')
-
+  const navOption = document.querySelectorAll('.button-default-project');
   navOption.forEach((option) => {
     if(option !== this) {
       option.classList.remove('active')
@@ -196,8 +213,8 @@ function setActiveButton (option) {
 
 function todoPage () {
   displayDefault("Inbox")
-  
-  setActiveButton(document.querySelector('.button-default-project'))
+  setActiveButton(document.querySelector('.button-default-project'));
+  createTodo(getProjectArray())
   getAddTaskButton().addEventListener('click', () => {
     createTaskForm()
     getAddTaskButton().style.display = 'none'
@@ -210,19 +227,31 @@ todoPage()
 
 function getAddTaskButton () {
   const addTaskBtn = document.getElementById(getButtonId());
-  
   return addTaskBtn
 }
 
-function getProject () {
-  const projectButtonId = getButtonId()
+function getProjectArray() {
+  const activeProject = document.querySelector('.active');
+  console.log(activeProject.id)
+  if (activeProject.id === "button-inbox-project") {
+    return tasksInbox
+  }
+  if (activeProject.id === "button-today-project") {
+    return tasksToday
+  }
+  if (activeProject.id === "button-upcoming-project") {
+    return tasksUpcoming
+  }
 }
 
-function createTodo () {
-  localStorage.setItem('tasks', JSON.stringify(taskLibrary));
-  
+
+
+function createTodo(projectArray) {
+  localStorage.setItem('tasksInbox', JSON.stringify(tasksInbox));
+  localStorage.setItem('tasksToday', JSON.stringify(tasksToday));
+  localStorage.setItem('tasksUpcoming', JSON.stringify(tasksUpcoming));
   todoListUl.textContent = " ";
-  for(let i=0; i<taskLibrary.length; i++) {
+  for(let i=0; i<projectArray.length; i++) {
     const taskList = document.createElement('li');
     const taskListContainer = document.createElement('div');
     const taskCompletedContainer = document.createElement('div');
@@ -231,15 +260,15 @@ function createTodo () {
     const taskContentContainer = document.createElement('div');
     const taskContentWrapper = document.createElement('div');
     const taskContentHead = document.createElement('h4');
-    taskContentHead.textContent = taskLibrary[i].title
+    taskContentHead.textContent = projectArray[i].title
     const taskContentDescription = document.createElement('p');
-    taskContentDescription.textContent = taskLibrary[i].description
+    taskContentDescription.textContent = projectArray[i].description
     const taskContentDateContainer = document.createElement('div');
     const taskContentDate = document.createElement('span');
     const taskDeleteContainer = document.createElement('div');
     const taskDeleteBtn = document.createElement('button');
     const taskDeleteImg = document.createElement('img');
-    const contentDate =  taskLibrary[i].date;
+    const contentDate =  projectArray[i].date;
     taskContentDate.textContent = contentDate ? format(new Date(contentDate), 'E dd'): contentDate
     taskList.setAttribute('class', 'task-list-item');
     taskListContainer.setAttribute('class', 'task-list-body');
@@ -270,3 +299,4 @@ function createTodo () {
     todoListUl.appendChild(taskList);
   }
 }
+
