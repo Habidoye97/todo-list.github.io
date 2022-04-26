@@ -205,9 +205,9 @@ function getFormInput() {
 
 function setActiveButton(option) {
   const navOption = document.querySelectorAll('.button-default-project');
-  navOption.forEach((option) => {
-    if (!option) {
-      option.classList.remove('active');
+  navOption.forEach((button) => {
+    if (option) {
+      button.classList.remove('active');
     }
   });
 
@@ -216,7 +216,7 @@ function setActiveButton(option) {
 
 function todoPage() {
   displayDefault('Inbox');
-  setActiveButton(document.querySelector('.button-default-project'));
+  setActiveButton(document.querySelector('#button-inbox-project'));
   createTodo(getProjectArray());
   getAddTaskButton().addEventListener('click', () => {
     createTaskForm();
@@ -271,7 +271,7 @@ function createTodo(projectArray) {
     const taskDeleteBtn = document.createElement('button');
     const taskDeleteImg = document.createElement('img');
     const taskDate = projectArray[i].date;
-    const date = taskDate ? format(new Date(contentDate), 'E dd'): contentDate;
+    const date = taskDate ? format(new Date(taskDate), 'E dd'): taskDate;
     taskContentDate.textContent = date;
     taskList.setAttribute('class', 'task-list-item');
     taskListContainer.setAttribute('class', 'task-list-body');
