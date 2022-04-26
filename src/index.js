@@ -274,6 +274,11 @@ function createTodo(projectArray) {
     taskListContainer.setAttribute('class', 'task-list-body');
     taskCompletedContainer.setAttribute('class', 'task-list-checkbox-container');
     taskCompledtedCheck.setAttribute('class', 'task-list-complete-checkbox');
+    taskCompledtedCheck.addEventListener('click', () => {
+      
+      deleteTask(projectArray[i].id, '1 task completed ')
+      
+    })
     taskContentContainer.setAttribute('class', 'task-list-item-content');
     taskContentWrapper.setAttribute('class', 'task-list-item-content-wrapper');
     taskContentHead.setAttribute('class', 'task-content head')
@@ -282,6 +287,7 @@ function createTodo(projectArray) {
     taskContentDate.setAttribute('class', 'task-content date');
     taskDeleteContainer.setAttribute('class', 'task-list-item-delete-wrapper');
     taskDeleteBtn.setAttribute('class', 'task-delete-button hidden');
+    taskDeleteBtn.addEventListener('click', function (){ deleteTask(projectArray[i].id, "Are us sure u want to delete ")})
     taskDeleteImg.setAttribute('class', 'task-delete-img');
     taskDeleteImg.src = './icons8-delete-16.png'
     taskCompletedContainer.appendChild(taskCompledtedCheck);
@@ -297,6 +303,42 @@ function createTodo(projectArray) {
     taskListContainer.appendChild(taskDeleteContainer);
     taskList.appendChild(taskListContainer);
     todoListUl.appendChild(taskList);
+  }
+}
+
+function deleteTask(taskId, message) {
+  const storedTaskInbox = JSON.parse(localStorage.getItem('tasksInbox'));
+  const storedTaskToday = JSON.parse(localStorage.getItem('tasksToday'));
+  const storedTaskUpcoming = JSON.parse(localStorage.getItem('tasksUpcoming'));
+  const selectedTask = storedTaskInbox.find(item => item.id === taskId);
+  const confirmTaskDelete = confirm(message + selectedTask.title);
+  if (confirmTaskDelete) {
+    if(isToday(new Date(selectedTask.date))){
+      const indexInInbox = storedTaskInbox.indexOf(selectedTask)
+      const indexInToday = storedTaskToday.indexOf(selectedTask)
+      if (indexInInbox > -1) {
+        const removeFromInbox = storedTaskInbox.splice(indexInInbox, 1);
+        const removeFromToday = storedTaskToday.splice(indexInToday, 1);
+        tasksInbox = storedTaskInbox
+        tasksToday = storedTaskToday
+        createTodo(getProjectArray())
+        return
+      }
+    }
+    if(!isToday(new Date(selectedTask.date))){
+      const indexInInbox = storedTaskInbox.indexOf(selectedTask)
+      const indexInUpcomming = storedTaskUpcoming.indexOf(selectedTask)
+      if (indexInInbox > -1) {
+        const removeFromInbox = storedTaskInbox.splice(indexInInbox, 1);
+        const removeFromUpcoming = storedTaskUpcoming.splice(indexInUpcomming, 1);
+        tasksInbox = storedTaskInbox
+        tasksUpcoming = storedTaskUpcoming
+        createTodo(getProjectArray())
+        return
+      }
+    }
+  } else {
+    return
   }
 }
 
