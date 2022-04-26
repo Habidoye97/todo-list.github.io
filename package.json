@@ -20,7 +20,8 @@
   "homepage": "https://github.com/Habidoye97/todo-list.github.io#readme",
   "devDependencies": {
     "css-loader": "^6.5.1",
-    "eslint": "^8.13.0",
+    "eslint": "^8.14.0",
+    "eslint-config-google": "^0.14.0",
     "style-loader": "^3.3.1",
     "webpack": "^5.64.3",
     "webpack-cli": "^4.9.1"
