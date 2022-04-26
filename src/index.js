@@ -61,6 +61,7 @@ inboxBtn.addEventListener('click', (e) => {
   if (e.target.classList.contains('active')) return
   setActiveButton(inboxBtn)
   createTodo(getProjectArray())
+  showTaskNumber()
   let projectName = "Inbox"
   displayDefault(projectName)
   getAddTaskButton().addEventListener('click', () => {
@@ -73,7 +74,8 @@ const todayBtn = document.querySelector("#button-today-project");
 todayBtn.addEventListener('click', (e) => {
   if (e.target.classList.contains('active')) return
   setActiveButton(todayBtn)
-  createTodo(getProjectArray())
+  createTodo(getProjectArray());
+  showTaskNumber()
   let projectName = "Today"
   displayDefault(projectName)
   getAddTaskButton().addEventListener('click', () => {
@@ -88,6 +90,7 @@ upcomingBtn.addEventListener('click', (e) => {
   if (e.target.classList.contains('active')) return
   setActiveButton(upcomingBtn)
   createTodo(getProjectArray())
+  showTaskNumber()
   let projectName = "Upcoming"
   displayDefault(projectName)
   getAddTaskButton().addEventListener('click', () => {
@@ -169,6 +172,7 @@ function createTaskForm () {
     displayContainer.removeChild(addTaskForm);
     getAddTaskButton().style.display = "block"
     createTodo(getProjectArray())
+    showTaskNumber()
   });
   const cancelBtn = document.createElement('button');
   cancelBtn.setAttribute('id', 'cancel-task-button');
@@ -219,7 +223,7 @@ function todoPage () {
     createTaskForm()
     getAddTaskButton().style.display = 'none'
   })
-  
+  showTaskNumber()
 }
 
 
@@ -322,6 +326,7 @@ function deleteTask(taskId, message) {
         tasksInbox = storedTaskInbox
         tasksToday = storedTaskToday
         createTodo(getProjectArray())
+        showTaskNumber()
         return
       }
     }
@@ -334,6 +339,7 @@ function deleteTask(taskId, message) {
         tasksInbox = storedTaskInbox
         tasksUpcoming = storedTaskUpcoming
         createTodo(getProjectArray())
+        showTaskNumber()
         return
       }
     }
@@ -342,3 +348,11 @@ function deleteTask(taskId, message) {
   }
 }
 
+function showTaskNumber () {
+  const inboxTaskNumber = document.getElementById('number-of-inbox-task');
+  const todayTaskNumber = document.getElementById('number-of-today-task');
+  const upcomingTaskNumber = document.getElementById('number-of-upcoming-task');
+  inboxTaskNumber.textContent = JSON.parse(localStorage.getItem('tasksInbox')).length=== 0 ? '':JSON.parse(localStorage.getItem('tasksInbox')).length;
+  todayTaskNumber.textContent = JSON.parse(localStorage.getItem('tasksToday')).length===0 ? '': JSON.parse(localStorage.getItem('tasksToday')).length;
+  upcomingTaskNumber.textContent = JSON.parse(localStorage.getItem('tasksUpcoming')).length=== 0? '':JSON.parse(localStorage.getItem('tasksUpcoming')).length;
+}

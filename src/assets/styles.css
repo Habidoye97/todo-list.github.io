@@ -90,6 +90,11 @@ i {
   background-color: var(--btn-hover);
 }
 
+.button-default-project {
+  display: flex;
+  justify-content: space-between;
+}
+
 .display-section {
   margin-bottom: 38px;
   padding-bottom: 2px;
@@ -109,6 +114,7 @@ i {
   display: flex;
   padding-left: 0px;
   align-items: center;
+  padding-top: 5px;
 }
 
 .add-task-button:hover {
@@ -124,6 +130,7 @@ i {
 #addTaskForm  {
   font-size: 13px;
   font-family: inherit;
+  padding-top: 10px;
 }
 
 #addTaskFormTop {
