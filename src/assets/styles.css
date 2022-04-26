@@ -55,6 +55,9 @@ i {
   height: 50px;
   background: var(--header-bg);
   padding: 5px;
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
 }
 
 #header-container {
@@ -103,7 +106,7 @@ i {
 
 .todo-list-display-container {
   padding: 35px 55px 0 55px;
-  
+  width: 90%;
 }
 
 .list-header {
@@ -259,6 +262,36 @@ i {
   display: none;
 }
 
-.task-list-body:hover .hidden {
+.task-list-body:hover .hidden, .hidden:hover {
   display: block;
+  background: transparent;
+}
+
+.block {
+  display: block;
+}
+
+#inpNavToggle {
+  display: none;
+}
+
+i {
+  color: white;
+}
+
+.display {
+  display: none;
+}
+
+@media only screen and (max-width: 640px){
+  .nav {
+    display: none;
+  }
+  
+  .display {
+    position: fixed;
+    display: block;
+    top: 50px;
+    z-index: 2;
+  }
 }

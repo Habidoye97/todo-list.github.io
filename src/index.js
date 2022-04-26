@@ -356,3 +356,8 @@ function showTaskNumber () {
   todayTaskNumber.textContent = JSON.parse(localStorage.getItem('tasksToday')).length===0 ? '': JSON.parse(localStorage.getItem('tasksToday')).length;
   upcomingTaskNumber.textContent = JSON.parse(localStorage.getItem('tasksUpcoming')).length=== 0? '':JSON.parse(localStorage.getItem('tasksUpcoming')).length;
 }
+
+document.getElementById('inpNavToggle').addEventListener('click', function (){
+  const navBar = document.getElementById('nav');
+  navBar.classList.toggle('display')
+})
