@@ -98,6 +98,11 @@ i {
   justify-content: space-between;
 }
 
+.button-default-project div {
+  display: flex;
+  align-items: center;
+}
+
 .display-section {
   margin-bottom: 38px;
   padding-bottom: 2px;
@@ -125,7 +130,7 @@ i {
   color: var(--header-bg);
 }
 
-#add-task-image {
+#add-task-image, #project-image {
   height: 13px;
   margin-right: 5px;
 }
