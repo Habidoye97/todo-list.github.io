@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import './assets/styles.css';
-import {isToday, format} from 'date-fns';
+import {isToday, format, isBefore} from 'date-fns';
 
 let tasksInbox = [];
 let tasksToday = [];
@@ -52,7 +52,6 @@ function addTaskToLibrary(title, description, date) {
     tasksInbox.push(task);
     return;
   }
-  console.log(tasksToday);
 }
 
 // PROJECT BUTTON
@@ -235,7 +234,6 @@ function getAddTaskButton() {
 
 function getProjectArray() {
   const activeProject = document.querySelector('.active');
-  console.log(activeProject.id);
   if (activeProject.id === 'button-inbox-project') {
     return tasksInbox;
   }
@@ -365,3 +363,22 @@ document.getElementById('inpNavToggle').addEventListener('click', function() {
   const navBar = document.getElementById('nav');
   navBar.classList.toggle('display');
 });
+
+const overdueArray = [];
+
+const inboxContent = JSON.parse(localStorage.getItem('tasksToday'));
+inboxContent.forEach((task) => {
+  if (isBefore(new Date(task.date), new Date('2022-04-27'))) {
+    const removeTask =inboxContent.splice(inboxContent.indexOf(task), 1);
+    overdueArray.push(removeTask);
+  }
+});
+console.log(inboxContent);
+console.log(overdueArray);
+console.log(new Date(format(new Date(), 'yyyy-MM-dd')));
+// console.log(inboxContent);
+
+// const check = isBefore(new Date('2022-04-26'), new Date());
+// console.log(check);
+
+
