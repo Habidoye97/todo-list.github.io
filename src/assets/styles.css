@@ -262,10 +262,18 @@ i {
 
 .task-list-item-delete-wrapper {
   z-index: 1;
+  display: flex;
+}
+
+.task-edit-image {
+  height: 16px;
+  width: 16px;
+  margin-right: 8px;
 }
 
 .hidden {
   display: none;
+  padding: 0;
 }
 
 .task-list-body:hover .hidden, .hidden:hover {

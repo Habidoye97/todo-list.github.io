@@ -304,6 +304,8 @@ function createTodo(projectArray) {
     const taskDeleteContainer = document.createElement('div');
     const taskDeleteBtn = document.createElement('button');
     const taskDeleteImg = document.createElement('img');
+    const taskEditBtn = document.createElement('button');
+    const taskEditImg = document.createElement('img');
     const taskDate = projectArray[i].date;
     const date = taskDate ? format(new Date(taskDate), 'E dd'): taskDate;
     taskContentDate.textContent = date;
@@ -324,14 +326,19 @@ function createTodo(projectArray) {
     taskContentDate.setAttribute('class', 'task-content date');
     taskDeleteContainer.setAttribute('class', 'task-list-item-delete-wrapper');
     taskDeleteBtn.setAttribute('class', 'task-delete-button hidden');
+    taskEditBtn.setAttribute('class', 'task-edit-button hidden');
     taskDeleteBtn.addEventListener('click', function() {
       // eslint-disable-next-line max-len
       deleteTask(projectArray[i].id, `Are you sure u want to delete ${projectArray[i].title}`);
     });
     taskDeleteImg.setAttribute('class', 'task-delete-img');
+    taskEditImg.setAttribute('class', 'task-edit-image');
+    taskEditImg.src = './icons8-edit-24.png';
     taskDeleteImg.src = './icons8-delete-16.png';
     taskCompletedContainer.appendChild(taskCompledtedCheck);
+    taskEditBtn.appendChild(taskEditImg);
     taskDeleteBtn.appendChild(taskDeleteImg);
+    taskDeleteContainer.appendChild(taskEditBtn);
     taskDeleteContainer.appendChild(taskDeleteBtn);
     taskContentWrapper.appendChild(taskContentHead);
     taskContentWrapper.appendChild(taskContentDescription);
