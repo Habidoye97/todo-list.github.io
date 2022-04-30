@@ -325,7 +325,8 @@ function createTodo(projectArray) {
     taskDeleteContainer.setAttribute('class', 'task-list-item-delete-wrapper');
     taskDeleteBtn.setAttribute('class', 'task-delete-button hidden');
     taskDeleteBtn.addEventListener('click', function() {
-      deleteTask(projectArray[i].id, 'Are us sure u want to delete ');
+      // eslint-disable-next-line max-len
+      deleteTask(projectArray[i].id, `Are you sure u want to delete ${projectArray[i].title}`);
     });
     taskDeleteImg.setAttribute('class', 'task-delete-img');
     taskDeleteImg.src = './icons8-delete-16.png';
@@ -349,8 +350,9 @@ function deleteTask(taskId, message) {
   const storedTaskInbox = JSON.parse(localStorage.getItem('tasksInbox'));
   const storedTaskToday = JSON.parse(localStorage.getItem('tasksToday'));
   const storedTaskUpcoming = JSON.parse(localStorage.getItem('tasksUpcoming'));
+  const storedTaskOverdue = JSON.parse(localStorage.getItem('overDueTask'));
   const selectedTask = storedTaskInbox.find((item) => item.id === taskId);
-  const confirmTaskDelete = confirm(message + selectedTask.title);
+  const confirmTaskDelete = confirm(message);
   if (confirmTaskDelete) {
     if (isToday(new Date(selectedTask.date))) {
       const indexInInbox = storedTaskInbox.indexOf(selectedTask);
@@ -366,22 +368,36 @@ function deleteTask(taskId, message) {
       }
     }
     if (!isToday(new Date(selectedTask.date))) {
-      const indexInInbox = storedTaskInbox.indexOf(selectedTask);
-      const indexInUpcomming = storedTaskUpcoming.indexOf(selectedTask);
-      if (indexInInbox > -1) {
-        storedTaskInbox.splice(indexInInbox, 1);
-        storedTaskUpcoming.splice(indexInUpcomming, 1);
-        tasksInbox = storedTaskInbox;
-        tasksUpcoming = storedTaskUpcoming;
-        createTodo(getProjectArray());
-        showTaskNumber();
-        return;
+      if (Date.parse(new Date(selectedTask.date)) > Date.parse(new Date())) {
+        const indexInInbox = storedTaskInbox.indexOf(selectedTask);
+        const indexInUpcomming = storedTaskUpcoming.indexOf(selectedTask);
+        if (indexInInbox > -1) {
+          storedTaskInbox.splice(indexInInbox, 1);
+          storedTaskUpcoming.splice(indexInUpcomming, 1);
+          tasksInbox = storedTaskInbox;
+          tasksUpcoming = storedTaskUpcoming;
+          createTodo(getProjectArray());
+          showTaskNumber();
+          return;
+        }
+      } else {
+        const indexInInbox = storedTaskInbox.indexOf(selectedTask);
+        const indexInOverDue = storedTaskOverdue.indexOf(selectedTask);
+        if (indexInInbox > -1) {
+          storedTaskInbox.splice(indexInInbox, 1);
+          storedTaskOverdue.splice(indexInOverDue, 1);
+          tasksInbox = storedTaskInbox;
+          overDueTask = storedTaskOverdue;
+          createTodo(getProjectArray());
+          showTaskNumber();
+          return;
+        }
       }
     }
   } else {
     return;
   }
-}
+};
 
 function showTaskNumber() {
   const inboxTaskNumber = document.getElementById('number-of-inbox-task');
@@ -491,24 +507,8 @@ function createOverDue() {
     taskList.appendChild(taskListContainer);
     overDueTaskUl.appendChild(taskList);
   }
+  if (overDueTask.length === 0) {
+    overDueTaskHead.textContent = '';
+  }
 }
-// const upcomingContent = JSON.parse(localStorage.getItem('tasksUpcoming'));
-// upcomingContent.map((task) => {
-//   if (isBefore(new Date(task.date), todayDate) || todayDate) {
-//     inboxContent.push(task);
-//     console.log(upcomingContent.indexOf(task));
-//     upcomingContent[upcomingContent.indexOf(task)] = '';
-//   } else {
-//     console.log(upcomingContent.indexOf(task));
-//   }
-// });
-// console.log(upcomingContent);
-// console.log(inboxContent);
-
-// console.log(inboxContent);
-
-
-// const check = isBefore(new Date('2022-04-26'), new Date());
-// console.log(check);
-
-
+console.log(Date.parse(new Date()));
