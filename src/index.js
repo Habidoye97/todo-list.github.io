@@ -5,11 +5,20 @@ import {isToday, format, isBefore} from 'date-fns';
 let tasksInbox = [];
 let tasksToday = [];
 let tasksUpcoming = [];
+let overDueTask = [];
+const todayDate = new Date(format(new Date(), 'yyyy-MM-dd'));
 
 const displayContainer = document.querySelector('.todo-list-display-container');
 const listHolder = document.createElement('div');
 const todoListUl = document.createElement('ul');
 const listHead = document.createElement('h2');
+// eslint-disable-next-line max-len
+const overDueTaskContainer = document.querySelector('.overdue-task-display-container');
+const overDueTaskHeadContainer = document.createElement('div');
+const overDueTaskHead = document.createElement('h3');
+const overDueTaskUl = document.createElement('ul');
+overDueTaskContainer.appendChild(overDueTaskHeadContainer);
+overDueTaskHeadContainer.appendChild(overDueTaskHead);
 
 function Task(title, description, date) {
   this.id = JSON.parse(localStorage.getItem('tasksInbox')).length + 1;
@@ -40,17 +49,29 @@ if (localStorage.getItem('tasksUpcoming') === null) {
   tasksUpcoming = tasksUpcomingFromStorage;
 }
 
+if (localStorage.getItem('overDueTask') === null) {
+  overDueTask = [];
+} else {
+  // eslint-disable-next-line max-len
+  const overDueTaskFromStorage = JSON.parse(localStorage.getItem('overDueTask'));
+  overDueTask = overDueTaskFromStorage;
+}
+
 function addTaskToLibrary(title, description, date) {
   const task = new Task(title, description, date);
-  if (isToday(new Date(date))) {
-    tasksToday.push(task);
+  if (title !== '' && description !=='' && date !== '') {
+    if (isToday(new Date(date))) {
+      tasksToday.push(task);
+      tasksInbox.push(task);
+      return;
+    }
+    if (!isToday(new Date(date))) {
+      tasksUpcoming.push(task);
+      tasksInbox.push(task);
+      return;
+    }
+  } else {
     tasksInbox.push(task);
-    return;
-  }
-  if (!isToday(new Date(date))) {
-    tasksUpcoming.push(task);
-    tasksInbox.push(task);
-    return;
   }
 }
 
@@ -74,6 +95,7 @@ todayBtn.addEventListener('click', (e) => {
   if (e.target.classList.contains('active')) return;
   setActiveButton(todayBtn);
   createTodo(getProjectArray());
+  createOverDue();
   showTaskNumber();
   const projectName = 'Today';
   displayDefault(projectName);
@@ -169,6 +191,10 @@ function createTaskForm() {
     displayContainer.removeChild(addTaskForm);
     getAddTaskButton().style.display = 'block';
     createTodo(getProjectArray());
+    const activeProject = document.querySelector('.active');
+    if (activeProject.id === 'button-today-project') {
+      createOverDue();
+    }
     showTaskNumber();
   });
   const cancelBtn = document.createElement('button');
@@ -198,6 +224,12 @@ function getFormInput() {
   if (taskTitleContent.value !== '' && taskDetailsContent.value !== '' ) {
     // eslint-disable-next-line max-len
     addTaskToLibrary(taskTitleContent.value, taskDetailsContent.value, dueDateContent.value);
+  } else {
+    if (taskTitleContent.value === '') {
+      alert('Your Todo must have a Title');
+    } else {
+      alert('Your Todo must have description');
+    }
   }
   taskFormContent.reset();
 }
@@ -216,6 +248,8 @@ function setActiveButton(option) {
 function todoPage() {
   displayDefault('Inbox');
   setActiveButton(document.querySelector('#button-inbox-project'));
+  removeTodayTask();
+  removeOverdueTask();
   createTodo(getProjectArray());
   getAddTaskButton().addEventListener('click', () => {
     createTaskForm();
@@ -250,7 +284,9 @@ function createTodo(projectArray) {
   localStorage.setItem('tasksInbox', JSON.stringify(tasksInbox));
   localStorage.setItem('tasksToday', JSON.stringify(tasksToday));
   localStorage.setItem('tasksUpcoming', JSON.stringify(tasksUpcoming));
-  todoListUl.textContent = ' ';
+  overDueTaskHead.textContent = '';
+  overDueTaskUl.textContent = '';
+  todoListUl.textContent = '';
   for (let i=0; i<projectArray.length; i++) {
     const taskList = document.createElement('li');
     const taskListContainer = document.createElement('div');
@@ -364,19 +400,113 @@ document.getElementById('inpNavToggle').addEventListener('click', function() {
   navBar.classList.toggle('display');
 });
 
-const overdueArray = [];
+function removeOverdueTask() {
+  for (let i = 0; i < tasksToday.length; i++) {
+    if (isBefore(new Date(tasksToday[i].date), todayDate)) {
+      overDueTask.push(tasksToday[i]);
+      tasksToday[i] = '';
+    }
+  };
+  tasksToday = tasksToday.filter((el)=> {
+    return el != null && el != '';
+  });
+  localStorage.setItem('overDueTask', JSON.stringify(overDueTask));
+}
 
-const inboxContent = JSON.parse(localStorage.getItem('tasksToday'));
-inboxContent.forEach((task) => {
-  if (isBefore(new Date(task.date), new Date('2022-04-27'))) {
-    const removeTask =inboxContent.splice(inboxContent.indexOf(task), 1);
-    overdueArray.push(removeTask);
+function removeTodayTask() {
+  for (let i = 0; i < tasksUpcoming.length; i++) {
+    if (isToday(new Date(tasksUpcoming[i].date))) {
+      tasksToday.push(tasksUpcoming[i]);
+      tasksUpcoming[i] = '';
+    }
+  };
+  tasksUpcoming = tasksUpcoming.filter((el)=> {
+    return el != null && el != '';
+  });
+}
+console.log(overDueTask);
+
+function createOverDue() {
+  overDueTaskContainer.appendChild(overDueTaskUl);
+  overDueTaskHead.textContent = 'Overdue';
+  overDueTaskUl.textContent = ' ';
+  for (let i=0; i<overDueTask.length; i++) {
+    const taskList = document.createElement('li');
+    const taskListContainer = document.createElement('div');
+    const taskCompletedContainer = document.createElement('div');
+    const taskCompledtedCheck = document.createElement('input');
+    taskCompledtedCheck.type = 'checkbox';
+    const taskContentContainer = document.createElement('div');
+    const taskContentWrapper = document.createElement('div');
+    const taskContentHead = document.createElement('h4');
+    taskContentHead.textContent = overDueTask[i].title;
+    const taskContentDescription = document.createElement('p');
+    taskContentDescription.textContent = overDueTask[i].description;
+    const taskContentDateContainer = document.createElement('div');
+    const taskContentDate = document.createElement('span');
+    const taskDeleteContainer = document.createElement('div');
+    const taskDeleteBtn = document.createElement('button');
+    const taskDeleteImg = document.createElement('img');
+    const taskDate = overDueTask[i].date;
+    const date = taskDate ? format(new Date(taskDate), 'E dd'): taskDate;
+    taskContentDate.textContent = date;
+    taskList.setAttribute('class', 'overdue task-list-item');
+    taskListContainer.setAttribute('class', 'overdue task-list-body');
+    // eslint-disable-next-line max-len
+    taskCompletedContainer.setAttribute('class', 'overdue task-list-checkbox-container');
+    // eslint-disable-next-line max-len
+    taskCompledtedCheck.setAttribute('class', 'overdue task-list-complete-checkbox');
+    taskCompledtedCheck.addEventListener('click', () => {
+      deleteTask(overDueTask[i].id, '1 task completed ');
+    });
+    // eslint-disable-next-line max-len
+    taskContentContainer.setAttribute('class', 'overdue task-list-item-content');
+    // eslint-disable-next-line max-len
+    taskContentWrapper.setAttribute('class', 'overdue task-list-item-content-wrapper');
+    taskContentHead.setAttribute('class', 'overdue-task-content head');
+    // eslint-disable-next-line max-len
+    taskContentDescription.setAttribute('class', 'overdue task-content description');
+    // eslint-disable-next-line max-len
+    taskContentDateContainer.setAttribute('class', 'overdue task-content-date-container');
+    taskContentDate.setAttribute('class', 'overdue task-content date');
+    // eslint-disable-next-line max-len
+    taskDeleteContainer.setAttribute('class', 'overdue task-list-item-delete-wrapper');
+    taskDeleteBtn.setAttribute('class', 'overdue task-delete-button hidden');
+    taskDeleteBtn.addEventListener('click', function() {
+      deleteTask(overDueTask[i].id, 'Are us sure u want to delete ');
+    });
+    taskDeleteImg.setAttribute('class', 'overdue task-delete-img');
+    taskDeleteImg.src = './icons8-delete-16.png';
+    taskCompletedContainer.appendChild(taskCompledtedCheck);
+    taskDeleteBtn.appendChild(taskDeleteImg);
+    taskDeleteContainer.appendChild(taskDeleteBtn);
+    taskContentWrapper.appendChild(taskContentHead);
+    taskContentWrapper.appendChild(taskContentDescription);
+    taskContentDateContainer.appendChild(taskContentDate);
+    taskContentContainer.appendChild(taskContentWrapper);
+    taskContentContainer.appendChild(taskContentDateContainer);
+    taskListContainer.appendChild(taskCompletedContainer);
+    taskListContainer.appendChild(taskContentContainer);
+    taskListContainer.appendChild(taskDeleteContainer);
+    taskList.appendChild(taskListContainer);
+    overDueTaskUl.appendChild(taskList);
   }
-});
-console.log(inboxContent);
-console.log(overdueArray);
-console.log(new Date(format(new Date(), 'yyyy-MM-dd')));
+}
+// const upcomingContent = JSON.parse(localStorage.getItem('tasksUpcoming'));
+// upcomingContent.map((task) => {
+//   if (isBefore(new Date(task.date), todayDate) || todayDate) {
+//     inboxContent.push(task);
+//     console.log(upcomingContent.indexOf(task));
+//     upcomingContent[upcomingContent.indexOf(task)] = '';
+//   } else {
+//     console.log(upcomingContent.indexOf(task));
+//   }
+// });
+// console.log(upcomingContent);
 // console.log(inboxContent);
+
+// console.log(inboxContent);
+
 
 // const check = isBefore(new Date('2022-04-26'), new Date());
 // console.log(check);

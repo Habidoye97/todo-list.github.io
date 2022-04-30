@@ -109,7 +109,8 @@ i {
   width: 100%;
 }
 
-.todo-list-display-container {
+.todo-list-display-container, 
+.overdue-task-display-container {
   padding: 35px 55px 0 55px;
   width: 90%;
 }
