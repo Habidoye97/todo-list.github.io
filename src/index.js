@@ -186,6 +186,11 @@ function createTaskForm() {
   addNewTaskBtn.setAttribute('id', 'add-new-task-button');
   addNewTaskBtn.textContent = 'Add Task';
   addNewTaskBtn.type = 'button';
+  const updateTaskBtn = document.createElement('button');
+  updateTaskBtn.setAttribute('id', 'update-task-button');
+  updateTaskBtn.setAttribute('class', 'hidden');
+  updateTaskBtn.textContent ='Update';
+  updateTaskBtn.type = 'button';
   addNewTaskBtn.addEventListener('click', () => {
     getFormInput();
     displayContainer.removeChild(addTaskForm);
@@ -210,6 +215,7 @@ function createTaskForm() {
   addTaskFormTop.appendChild(taskDetails);
   addTaskFormTop.appendChild(dueDate);
   addTaskFormBottom.appendChild(addNewTaskBtn);
+  addTaskFormBottom.appendChild(updateTaskBtn);
   addTaskFormBottom.appendChild(cancelBtn);
   addTaskForm.appendChild(addTaskFormTop);
   addTaskForm.appendChild(addTaskFormBottom);
@@ -331,6 +337,9 @@ function createTodo(projectArray) {
       // eslint-disable-next-line max-len
       deleteTask(projectArray[i].id, `Are you sure u want to delete ${projectArray[i].title}`);
     });
+    taskEditBtn.addEventListener('click', function() {
+      editTask(projectArray[i].id);
+    });
     taskDeleteImg.setAttribute('class', 'task-delete-img');
     taskEditImg.setAttribute('class', 'task-edit-image');
     taskEditImg.src = './icons8-edit-24.png';
@@ -450,6 +459,7 @@ function removeTodayTask() {
 console.log(overDueTask);
 
 function createOverDue() {
+  localStorage.setItem('overDueTask', JSON.stringify(overDueTask));
   overDueTaskContainer.appendChild(overDueTaskUl);
   overDueTaskHead.textContent = 'Overdue';
   overDueTaskUl.textContent = ' ';
@@ -470,6 +480,8 @@ function createOverDue() {
     const taskDeleteContainer = document.createElement('div');
     const taskDeleteBtn = document.createElement('button');
     const taskDeleteImg = document.createElement('img');
+    const taskEditBtn = document.createElement('button');
+    const taskEditImg = document.createElement('img');
     const taskDate = overDueTask[i].date;
     const date = taskDate ? format(new Date(taskDate), 'E dd'): taskDate;
     taskContentDate.textContent = date;
@@ -495,13 +507,21 @@ function createOverDue() {
     // eslint-disable-next-line max-len
     taskDeleteContainer.setAttribute('class', 'overdue task-list-item-delete-wrapper');
     taskDeleteBtn.setAttribute('class', 'overdue task-delete-button hidden');
+    taskEditBtn.setAttribute('class', 'task-edit-button hidden');
     taskDeleteBtn.addEventListener('click', function() {
       deleteTask(overDueTask[i].id, 'Are us sure u want to delete ');
     });
+    taskEditBtn.addEventListener('click', function() {
+      editTask(overDueTask[i].id);
+    });
     taskDeleteImg.setAttribute('class', 'overdue task-delete-img');
+    taskEditImg.setAttribute('class', 'task-edit-image');
+    taskEditImg.src = './icons8-edit-24.png';
     taskDeleteImg.src = './icons8-delete-16.png';
     taskCompletedContainer.appendChild(taskCompledtedCheck);
+    taskEditBtn.appendChild(taskEditImg);
     taskDeleteBtn.appendChild(taskDeleteImg);
+    taskDeleteContainer.appendChild(taskEditBtn);
     taskDeleteContainer.appendChild(taskDeleteBtn);
     taskContentWrapper.appendChild(taskContentHead);
     taskContentWrapper.appendChild(taskContentDescription);
@@ -519,3 +539,25 @@ function createOverDue() {
   }
 }
 console.log(Date.parse(new Date()));
+
+function editTask(taskId) {
+  createTaskForm();
+  const storedTaskInbox = JSON.parse(localStorage.getItem('tasksInbox'));
+  const selectedTask = storedTaskInbox.find((item) => item.id === taskId);
+  document.getElementById('taskTitleArea').textContent = selectedTask.title;
+  // eslint-disable-next-line max-len
+  document.getElementById('taskDetailsArea').textContent = selectedTask.description;
+  document.getElementById('dueDate').textContent = new Date(selectedTask.date);
+  const addTaskForm = document.getElementById('addTaskForm');
+  const addTaskBtn = document.getElementById('add-new-task-button');
+  const updateTaskBtn = document.getElementById('update-task-button');
+  updateTaskBtn.classList.remove('hidden');
+  addTaskBtn.classList.add('hidden');
+  updateTaskBtn.addEventListener('click', function() {
+    deleteTask(selectedTask.id, `Are you sure you want to edit ${selectedTask.title}`);
+    getFormInput();
+    displayContainer.removeChild(addTaskForm);
+    createTodo(getProjectArray());
+    showTaskNumber();
+  });
+}

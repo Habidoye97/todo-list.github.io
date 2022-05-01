@@ -191,7 +191,7 @@ i {
   border: var(--form-outline-color) solid 1px;
 }
 
-#add-new-task-button {
+#add-new-task-button, #update-task-button {
   background-color: var(--header-bg);
   color: white;
   width: fit-content;
