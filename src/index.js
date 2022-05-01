@@ -554,6 +554,7 @@ function editTask(taskId) {
   updateTaskBtn.classList.remove('hidden');
   addTaskBtn.classList.add('hidden');
   updateTaskBtn.addEventListener('click', function() {
+    // eslint-disable-next-line max-len
     deleteTask(selectedTask.id, `Are you sure you want to edit ${selectedTask.title}`);
     getFormInput();
     displayContainer.removeChild(addTaskForm);
