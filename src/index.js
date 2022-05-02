@@ -559,6 +559,10 @@ function editTask(taskId) {
     getFormInput();
     displayContainer.removeChild(addTaskForm);
     createTodo(getProjectArray());
+    const activeProject = document.querySelector('.active');
+    if (activeProject.id === 'button-today-project') {
+      createOverDue();
+    };
     showTaskNumber();
   });
 }
